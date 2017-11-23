@@ -28,5 +28,5 @@ RUN chmod +x /usr/local/bin/docker
 
 RUN apt-get update && \
     apt-get install -y gdebi-core && \
-	gdebi mesos.deb
+    gdebi mesos.deb
 
