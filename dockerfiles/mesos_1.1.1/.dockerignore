@@ -1,2 +1,5 @@
 # Ignore agent subfolder
 ./agent/
+
+# Ignore master subfoler
+./master/
