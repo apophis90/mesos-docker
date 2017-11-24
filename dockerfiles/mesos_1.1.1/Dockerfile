@@ -1,4 +1,4 @@
-FROM debian:jessie-slim as builder
+FROM debian:stretch-slim as builder
 MAINTAINER Patrick Kleindienst
 
 RUN apt-get update && \
@@ -17,7 +17,7 @@ echo "$MESOS_CHECKSUM" | sha256sum -c - && \
 if [ "$?" != "0" ]; then exit 1; fi
 
 
-FROM debian:jessie-slim
+FROM debian:stretch-slim
 
 COPY --from=builder /mesos.deb .
 
@@ -30,6 +30,8 @@ RUN mkdir -p /usr/share/man/man1/
 RUN apt-get update && \
     apt-get install -y \
     gdebi-core \
-    libcurl4-nss-dev && \
+    libcurl4-nss-dev \
+    systemd && \
     gdebi -n mesos.deb
+
 
