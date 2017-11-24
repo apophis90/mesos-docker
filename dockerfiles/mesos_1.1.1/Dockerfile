@@ -16,26 +16,20 @@ http://repos.mesosphere.com/debian/pool/main/m/mesos/${MESOS_DEB} && \
 echo "$MESOS_CHECKSUM" | sha256sum -c - && \
 if [ "$?" != "0" ]; then exit 1; fi
 
-ARG DOCKER_VERSION=17.09.0-ce
-ARG DOCKER_ARCH=x86_64
-ARG DOCKER_TARBALL=docker-${DOCKER_VERSION}.tgz
-
-RUN curl -o ${DOCKER_TARBALL} \ 
-https://download.docker.com/linux/static/stable/${DOCKER_ARCH}/${DOCKER_TARBALL} && \
-tar -xf ${DOCKER_TARBALL}
 
 FROM debian:jessie-slim
 
 COPY --from=builder /mesos.deb .
-COPY --from=builder /docker/docker /usr/local/bin
-
-RUN chmod +x /usr/local/bin/docker
 
 # Workaround since installation of openjdk-7-jre-headless fails otherwise due to symlink issue.
 # Details: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
 RUN mkdir -p /usr/share/man/man1/
 
+# libcurl4 must explicitly be installed since APT installs version 3 but Mesos is 
+# linked against version 4.
 RUN apt-get update && \
-    apt-get install -y gdebi-core && \
+    apt-get install -y \
+    gdebi-core \
+    libcurl4-nss-dev && \
     gdebi -n mesos.deb
 
