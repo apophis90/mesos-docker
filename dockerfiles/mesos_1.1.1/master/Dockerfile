@@ -3,4 +3,3 @@ MAINTAINER Patrick Kleindienst
 
 ENTRYPOINT ["mesos-master"]
 CMD ["--help"]
-
